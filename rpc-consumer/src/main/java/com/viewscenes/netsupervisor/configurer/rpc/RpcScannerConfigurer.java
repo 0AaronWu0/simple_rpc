@@ -9,13 +9,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
- * Created by MACHENIKE on 2018-12-03.
+ *
+ * @author MACHENIKE
+ * @date 2018-12-03
  */
 @Component
 public class RpcScannerConfigurer implements BeanDefinitionRegistryPostProcessor {
 
     String basePackage = "com.viewscenes.netsupervisor.service";
 
+    @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefinitionRegistry) throws BeansException {
         ClassPathRpcScanner scanner = new ClassPathRpcScanner(beanDefinitionRegistry);
 
@@ -25,6 +28,7 @@ public class RpcScannerConfigurer implements BeanDefinitionRegistryPostProcessor
         scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
     }
 
+    @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
 
     }

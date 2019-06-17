@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by MACHENIKE on 2018-11-30.
+ *
+ * @author MACHENIKE
+ * @date 2018-11-30
  */
 @Component
 public class ServiceRegistry {
@@ -24,7 +26,7 @@ public class ServiceRegistry {
         if (data != null) {
             ZkClient client = connectServer();
             if (client != null) {
-                AddRootNode(client);
+                addRootNode(client);
                 createNode(client, data);
             }
         }
@@ -34,7 +36,10 @@ public class ServiceRegistry {
         return client;
     }
 
-    private void AddRootNode(ZkClient client){
+    /**
+     创建根目录/rpc
+     */
+    private void addRootNode(ZkClient client){
         boolean exists = client.exists(ZK_REGISTRY_PATH);
         if (!exists){
             client.createPersistent(ZK_REGISTRY_PATH);
@@ -42,6 +47,10 @@ public class ServiceRegistry {
         }
     }
 
+    /**
+    在/rpc根目录下，创建临时顺序子节点
+     （有一点需要注意，子节点必须是临时节点。这样，生产者端停掉之后，才能通知到消费者，把此服务从服务列表中剔除）
+    */
     private void createNode(ZkClient client, String data) {
         String path = client.create(ZK_REGISTRY_PATH + "/provider", data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         logger.info("创建zookeeper数据节点 ({} => {})", path, data);

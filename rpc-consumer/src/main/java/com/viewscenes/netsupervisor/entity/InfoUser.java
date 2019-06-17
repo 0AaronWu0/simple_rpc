@@ -8,11 +8,13 @@ import java.io.Serializable;
  * @author: shiqizhen
  * @create: 2018-11-30 10:11
  **/
-public class InfoUser  {
+public class InfoUser  implements Serializable {
+
 
     /**
-	 * 
+	 *
 	 */
+    private static final long serialVersionUID = 1L;
 
 
 	private String id;
