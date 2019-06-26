@@ -17,7 +17,9 @@ import java.util.Arrays;
 import java.util.Set;
 
 /**
- * Created by MACHENIKE on 2018-12-03.
+ *
+ * @author MACHENIKE
+ * @date 2018-12-03
  */
 public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
 
@@ -32,6 +34,7 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
         super(registry);
     }
 
+    @Override
     public Set<BeanDefinitionHolder> doScan(String... basePackages) {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
@@ -76,15 +79,19 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
             }
         });
     }
-    private void processBeanDefinitions(
-            Set<BeanDefinitionHolder> beanDefinitions) {
+
+    private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {
 
         GenericBeanDefinition definition;
 
         for (BeanDefinitionHolder holder : beanDefinitions) {
 
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
+            //将接口的名称添加到构造参数
             definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
+            //设置BeanDefinition的class
+            //BeanFactory.getBean的方法跟进去后有一个判断是不是FactroyBean类型的。如果是从FactroyBean.getObejct获取
+            //rpcFactoryBean 实现了FactoryBean
             definition.setBeanClass(this.rpcFactoryBean.getClass());
 
             definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
@@ -92,6 +99,7 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
         }
     }
 
+    @Override
     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
         return beanDefinition.getMetadata().isInterface() && beanDefinition.getMetadata().isIndependent();
     }

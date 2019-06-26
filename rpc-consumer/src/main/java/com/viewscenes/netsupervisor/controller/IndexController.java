@@ -2,19 +2,22 @@ package com.viewscenes.netsupervisor.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.viewscenes.netsupervisor.annotation.TimeLog;
 import com.viewscenes.netsupervisor.entity.InfoUser;
 import com.viewscenes.netsupervisor.service.InfoUserService;
-import com.viewscenes.netsupervisor.util.IdUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Created by MACHENIKE on 2018-12-03.
@@ -27,27 +30,36 @@ public class IndexController {
     @Autowired
     InfoUserService userService;
 
+    AtomicLong id = new AtomicLong(10000);
+
     @RequestMapping("index")
     @ResponseBody
+    @TimeLog("123")
     public String index(){
         return  new Date().toString();
     }
 
     @RequestMapping("insert")
     @ResponseBody
-    public List<InfoUser> getUserList() throws InterruptedException {
+    public List<InfoUser> addUser() throws Exception {
 
         long start = System.currentTimeMillis();
+        String ip = InetAddress.getLocalHost().getHostAddress();
         int thread_count = 100;
         CountDownLatch countDownLatch = new CountDownLatch(thread_count);
-        for (int i=0;i<thread_count;i++){
+/*        for (int i=0;i<thread_count;i++){
             new Thread(() -> {
-                InfoUser infoUser = new InfoUser(IdUtil.getId(),"Jeen","BeiJing");
+                InfoUser infoUser = new InfoUser(id.incrementAndGet(), ip, System.currentTimeMillis()
+                        , "Jeen", "", "BeiJing");
                 List<InfoUser> users = userService.insertInfoUser(infoUser);
                 logger.info("返回用户信息记录:{}", JSON.toJSONString(users));
                 countDownLatch.countDown();
             }).start();
-        }
+        }*/
+        InfoUser infoUser = new InfoUser(id.incrementAndGet(), ip, System.currentTimeMillis()
+                , "Jeen", "", "BeiJing");
+        userService.insertInfoUser(infoUser);
+        logger.info("返回用户信息记录:{}", JSON.toJSONString(infoUser));
         countDownLatch.await();
         long end = System.currentTimeMillis();
         logger.info("线程数：{},执行时间:{}",thread_count,(end-start));
@@ -57,7 +69,7 @@ public class IndexController {
     @RequestMapping("getById")
     @ResponseBody
     public InfoUser getById(String id){
-        logger.info("根据ID查询用户信息:{}",id);
+        logger.info("根据ID查询用户信息:{},{}",id,userService.getInfoUserById(id));
         return userService.getInfoUserById(id);
     }
 

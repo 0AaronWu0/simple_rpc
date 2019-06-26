@@ -20,7 +20,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 
 /**
- * Created by MACHENIKE on 2018-12-03.
+ *
+ * @author MACHENIKE
+ * @date 2018-12-03
  */
 @Component
 @ChannelHandler.Sharable
@@ -36,16 +38,19 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     private ConcurrentHashMap<String,SynchronousQueue<Object>> queueMap = new ConcurrentHashMap<>();
 
+    @Override
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("已连接到RPC服务器.{}",ctx.channel().remoteAddress());
     }
 
+    @Override
     public void channelInactive(ChannelHandlerContext ctx)   {
         InetSocketAddress address =(InetSocketAddress) ctx.channel().remoteAddress();
         logger.info("与RPC服务器断开连接."+address);
         ctx.channel().close();
         connectManage.removeChannel(ctx.channel());
     }
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)throws Exception {
         Response response = JSON.parseObject(msg.toString(),Response.class);
         String requestId = response.getRequestId();
@@ -62,6 +67,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
     }
 
 
+    @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt)throws Exception {
         logger.info("已超过30秒未与RPC服务器进行读写操作!将发送心跳消息...");
         if (evt instanceof IdleStateEvent){
@@ -76,6 +82,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause){
         logger.info("RPC通信服务器发生异常.{}",cause);
         ctx.channel().close();

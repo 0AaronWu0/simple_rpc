@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by MACHENIKE on 2018-12-03.
+ *
+ * @author MACHENIKE
+ * @date 2018-12-03
  */
 @Component
 public class RpcFactory<T> implements InvocationHandler {
@@ -32,6 +34,7 @@ public class RpcFactory<T> implements InvocationHandler {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Request request = new Request();
         request.setClassName(method.getDeclaringClass().getName());

@@ -13,7 +13,7 @@ import java.util.Map;
  **/
 public interface InfoUserService {
 
-    List<InfoUser> insertInfoUser(InfoUser infoUser);
+    void insertInfoUser(InfoUser infoUser);
 
     InfoUser getInfoUserById(String id);
 

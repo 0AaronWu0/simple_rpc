@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.lang.reflect.Proxy;
 
 /**
- * Created by MACHENIKE on 2018-12-03.
+ *
+ * @author MACHENIKE
+ * @date 2018-12-03
  */
 public class RpcFactoryBean<T> implements FactoryBean<T> {
 
@@ -21,14 +23,17 @@ public class RpcFactoryBean<T> implements FactoryBean<T> {
         this.rpcInterface = rpcInterface;
     }
 
+    @Override
     public T getObject() throws Exception {
         return getRpc();
     }
 
+    @Override
     public Class<?> getObjectType() {
         return this.rpcInterface;
     }
 
+    @Override
     public boolean isSingleton() {
         return true;
     }
