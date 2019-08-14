@@ -10,6 +10,7 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
+import org.springframework.scheduling.annotation.Async;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -17,11 +18,10 @@ import java.util.Arrays;
 import java.util.Set;
 
 /**
- *
  * @author MACHENIKE
  * @date 2018-12-03
  */
-public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
+public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner {
 
     private RpcFactoryBean<?> rpcFactoryBean = new RpcFactoryBean<Object>();
 
@@ -48,6 +48,7 @@ public class ClassPathRpcScanner extends ClassPathBeanDefinitionScanner{
 
         return beanDefinitions;
     }
+
 
     public void registerFilters() {
         boolean acceptAllInterfaces = true;

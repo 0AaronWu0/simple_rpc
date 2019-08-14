@@ -1,4 +1,5 @@
 package com.viewscenes.netsupervisor.controller;
+import	java.lang.reflect.Method;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -9,8 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.InetAddress;
 import java.util.Date;
@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Created by MACHENIKE on 2018-12-03.
  */
 @Controller
+@RequestMapping("hello")
 public class IndexController {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,14 +33,27 @@ public class IndexController {
 
     AtomicLong id = new AtomicLong(10000);
 
-    @RequestMapping("index")
+    @RequestMapping(value = "index", method = RequestMethod.GET)
     @ResponseBody
     @TimeLog("123")
-    public String index(){
-        return  new Date().toString();
+    public String index(@RequestParam Map<String, Object> map){
+        System.out.println(map);
+        return  "GET" + map.toString();
     }
 
-    @RequestMapping("insert")
+    @RequestMapping(value = "index" , method = RequestMethod.POST)
+    @ResponseBody
+    @TimeLog("123")
+    public String indexPost(@RequestBody String str,@RequestParam Map<String, Object> reqMap){
+        System.out.println(str);
+        if(str != null){
+            Map map = JSON.parseObject(str);
+            System.out.println(map);
+        }
+        return  str + reqMap.toString()+ new Date().toString();
+    }
+
+    @RequestMapping(value = "insert", method = RequestMethod.PUT)
     @ResponseBody
     public List<InfoUser> addUser() throws Exception {
 

@@ -30,15 +30,18 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         this.serviceMap = serviceMap;
     }
 
+    @Override
     public void channelActive(ChannelHandlerContext ctx)   {
         logger.info("客户端连接成功!"+ctx.channel().remoteAddress());
     }
 
+    @Override
     public void channelInactive(ChannelHandlerContext ctx)   {
         logger.info("客户端断开连接!{}",ctx.channel().remoteAddress());
         ctx.channel().close();
     }
 
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)   {
         Request request = JSON.parseObject(msg.toString(),Request.class);
 
@@ -95,14 +98,15 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (parameters==null || parameters.length==0){
             return parameters;
         }else{
-            Object[] new_parameters = new Object[parameters.length];
+            Object[] newParameters = new Object[parameters.length];
             for(int i=0;i<parameters.length;i++){
-                new_parameters[i] = JSON.parseObject(parameters[i].toString(),parameterTypes[i]);
+                newParameters[i] = JSON.parseObject(parameters[i].toString(),parameterTypes[i]);
             }
-            return new_parameters;
+            return newParameters;
         }
     }
 
+    @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt)throws Exception {
         if (evt instanceof IdleStateEvent){
             IdleStateEvent event = (IdleStateEvent)evt;
@@ -115,6 +119,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)   {
         logger.info(cause.getMessage());
         ctx.close();

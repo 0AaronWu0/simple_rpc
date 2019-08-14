@@ -1,6 +1,8 @@
 package com.viewscenes.netsupervisor.entity;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -11,13 +13,11 @@ import java.io.Serializable;
  * @create: 2018-11-30 10:11
  **/
 @XStreamAlias("INFOUSER")
+@Data
 public class InfoUser  implements Serializable {
 
-    /**
-	 *
-	 */
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 5749665292465659412L;
 
     public InfoUser(){};
 
@@ -62,56 +62,5 @@ public class InfoUser  implements Serializable {
     /**  */
     private String passWord;
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public Long getTimes() {
-        return times;
-    }
-
-    public void setTimes(Long times) {
-        this.times = times;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserSex() {
-        return userSex;
-    }
-
-    public void setUserSex(String userSex) {
-        this.userSex = userSex;
-    }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
 }
 

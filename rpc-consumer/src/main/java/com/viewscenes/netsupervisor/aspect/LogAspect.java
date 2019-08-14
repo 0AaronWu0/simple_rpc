@@ -4,6 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -12,29 +13,30 @@ import org.springframework.stereotype.Component;
 public class LogAspect {
 
         @Pointcut("execution(public * com.viewscenes.netsupervisor.controller.*.*(..))")
-        public void LogAspect(){}
+        public void logAspect(){}
 
-        @Before("LogAspect()")
+        @Before("logAspect()")
         public void doBefore(JoinPoint joinPoint){
             System.out.println("AOPdoBefore");
         }
 
-        @After("LogAspect()")
+        @After("logAspect()")
         public void doAfter(JoinPoint joinPoint){
             System.out.println("AOP测试doAfter");
         }
 
-        @AfterReturning("LogAspect()")
+        @AfterReturning("logAspect()")
         public void doAfterReturning(JoinPoint joinPoint){
             System.out.println("AOP测试doAfterReturning");
         }
 
-        @AfterThrowing("LogAspect()")
+        @AfterThrowing("logAspect()")
         public void deAfterThrowing(JoinPoint joinPoint){
             System.out.println("AOP测试deAfterThrowing");
         }
 
-        @Around("LogAspect()")
+
+        @Around("logAspect()")
         public Object deAround(ProceedingJoinPoint pjp) throws Throwable{
             System.out.println("AOP测试deAround");
             Object[] args = pjp.getArgs();
@@ -49,6 +51,10 @@ public class LogAspect {
             System.out.println("输出,方法名：" + method + ";目标对象：" + target + ";返回值：" + result);
             System.out.println("======执行环绕通知结束=========");
             return result;
+
         }
 
+    public static void main(String[] args) {
+        System.out.println("sss");
+    }
 }

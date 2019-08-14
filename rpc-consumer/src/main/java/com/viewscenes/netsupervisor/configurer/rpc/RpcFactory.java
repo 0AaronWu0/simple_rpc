@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author MACHENIKE
  * @date 2018-12-03
  */
@@ -47,16 +46,16 @@ public class RpcFactory<T> implements InvocationHandler {
         Class<?> returnType = method.getReturnType();
 
         Response response = JSON.parseObject(result.toString(), Response.class);
-        if (response.getCode()==1){
+        if (response.getCode() == 1) {
             throw new Exception(response.getError_msg());
         }
-        if (returnType.isPrimitive() || String.class.isAssignableFrom(returnType)){
+        if (returnType.isPrimitive() || String.class.isAssignableFrom(returnType)) {
             return response.getData();
-        }else if (Collection.class.isAssignableFrom(returnType)){
-            return JSONArray.parseArray(response.getData().toString(),Object.class);
-        }else if(Map.class.isAssignableFrom(returnType)){
-            return JSON.parseObject(response.getData().toString(),Map.class);
-        }else{
+        } else if (Collection.class.isAssignableFrom(returnType)) {
+            return JSONArray.parseArray(response.getData().toString(), Object.class);
+        } else if (Map.class.isAssignableFrom(returnType)) {
+            return JSON.parseObject(response.getData().toString(), Map.class);
+        } else {
             Object data = response.getData();
             return JSONObject.parseObject(data.toString(), returnType);
         }

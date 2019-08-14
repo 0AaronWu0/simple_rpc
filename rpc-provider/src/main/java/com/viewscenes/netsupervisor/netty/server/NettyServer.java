@@ -9,11 +9,6 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +28,13 @@ import java.util.Map;
  * @author: shiqizhen
  * @create: 2018-11-30 17:10
  **/
+@SuppressWarnings("ALL")
 @Component
 public class NettyServer implements ApplicationContextAware,InitializingBean{
 
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-    private static final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-    private static final EventLoopGroup workerGroup = new NioEventLoopGroup(4);
+    private static final EventLoopGroup BOSS_GROUP = new NioEventLoopGroup(1);
+    private static final EventLoopGroup WORKER_GROUP = new NioEventLoopGroup(4);
 
     private Map<String, Object> serviceMap = new HashMap<>();
 
@@ -48,6 +44,7 @@ public class NettyServer implements ApplicationContextAware,InitializingBean{
     @Autowired
     ServiceRegistry registry;
 
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
         Map<String, Object> beans = applicationContext.getBeansWithAnnotation(RpcService.class);
@@ -66,24 +63,28 @@ public class NettyServer implements ApplicationContextAware,InitializingBean{
         logger.info("已加载全部服务接口:{}", serviceMap);
     }
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         start();
     }
 
+    @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
     public void start(){
 
         final NettyServerHandler handler = new NettyServerHandler(serviceMap);
 
+        //noinspection AlibabaAvoidManuallyCreateThread
         new Thread(() -> {
             try {
                 ServerBootstrap bootstrap = new ServerBootstrap();
-                bootstrap.group(bossGroup,workerGroup).
+                bootstrap.group(BOSS_GROUP, WORKER_GROUP).
                         channel(NioServerSocketChannel.class).
                         option(ChannelOption.SO_BACKLOG,1024).
                         childOption(ChannelOption.SO_KEEPALIVE,true).
                         childOption(ChannelOption.TCP_NODELAY,true).
                         childHandler(new ChannelInitializer<SocketChannel>() {
                             //创建NIOSocketChannel成功后，在进行初始化时，将它的ChannelHandler设置到ChannelPipeline中，用于处理网络IO事件
+                            @Override
                             protected void initChannel(SocketChannel channel) throws Exception {
                                 ChannelPipeline pipeline = channel.pipeline();
                                 pipeline.addLast(new IdleStateHandler(0, 0, 60));
@@ -103,8 +104,8 @@ public class NettyServer implements ApplicationContextAware,InitializingBean{
                 cf.channel().closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();
-                bossGroup.shutdownGracefully();
-                workerGroup.shutdownGracefully();
+                BOSS_GROUP.shutdownGracefully();
+                WORKER_GROUP.shutdownGracefully();
             }
         }).start();
     }

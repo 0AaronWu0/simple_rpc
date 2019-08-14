@@ -37,6 +37,7 @@ public class ZkCurator {
                 .build();
     }
 
+
     public void helloworld(CuratorFramework curator) throws Exception {
         //开启连接
         curator.start();

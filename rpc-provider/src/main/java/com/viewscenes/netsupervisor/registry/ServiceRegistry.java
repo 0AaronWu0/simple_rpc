@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  *
  * @author MACHENIKE
@@ -52,7 +54,8 @@ public class ServiceRegistry {
      （有一点需要注意，子节点必须是临时节点。这样，生产者端停掉之后，才能通知到消费者，把此服务从服务列表中剔除）
     */
     private void createNode(ZkClient client, String data) {
-        String path = client.create(ZK_REGISTRY_PATH + "/provider", data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        String path = null;
+        path = client.create(ZK_REGISTRY_PATH + "/provider", data, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
         logger.info("创建zookeeper数据节点 ({} => {})", path, data);
     }
 }

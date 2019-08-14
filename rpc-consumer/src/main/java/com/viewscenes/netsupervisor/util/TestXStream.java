@@ -30,6 +30,7 @@ public class TestXStream {
         System.out.println((Map<String, Object>)xStream.fromXML(resultXml));
     }
 
+
     private static InfoUser xmlToBean(String resultXml) {
         //创建xstream对象
         XStream xStream = new XStream();
